@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "prisma:generate": "prisma generate",
     "vercel-build": "pnpm prisma:generate && next build",
     "lint": "eslint",
     "test": "vitest",
