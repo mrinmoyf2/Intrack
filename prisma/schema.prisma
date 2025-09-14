@@ -1,0 +1,113 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id
+  email     String?  @unique
+  name      String?
+  role      Role     @default(USER)
+  buyers    Buyer[]  @relation("UserBuyers")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Buyer {
+  id           String        @id @default(uuid())
+  fullName     String
+  email        String?
+  phone        String
+  city         City
+  propertyType PropertyType
+  bhk          BHK?
+  purpose      Purpose
+  budgetMin    Int?
+  budgetMax    Int?
+  timeline     Timeline
+  source       Source
+  status       Status        @default(New)
+  notes        String?
+  tags         String[]      // Postgres text[]
+  ownerId      String
+  owner        User          @relation("UserBuyers", fields: [ownerId], references: [id])
+  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  history      BuyerHistory[]
+
+  @@index([updatedAt, status, city, propertyType])
+  @@index([fullName, phone])
+  @@index([email])
+}
+
+model BuyerHistory {
+  id        String   @id @default(cuid())
+  buyerId   String
+  buyer     Buyer    @relation(fields: [buyerId], references: [id])
+  changedBy String
+  changedAt DateTime @default(now())
+  diff      Json
+}
+
+enum City {
+  Chandigarh
+  Mohali
+  Zirakpur
+  Panchkula
+  Other
+}
+
+enum PropertyType {
+  Apartment
+  Villa
+  Plot
+  Office
+  Retail
+}
+
+enum BHK {
+  ONE
+  TWO
+  THREE
+  FOUR
+  STUDIO
+}
+
+enum Purpose {
+  Buy
+  Rent
+}
+
+enum Timeline {
+  ZERO_THREE_MONTHS
+  THREE_SIX_MONTHS
+  GREATER_SIX_MONTHS
+  EXPLORING
+}
+
+enum Source {
+  Website
+  Referral
+  Walk_in
+  Call
+  Other
+}
+
+enum Status {
+  New
+  Qualified
+  Contacted
+  Visited
+  Negotiation
+  Converted
+  Dropped
+}
