@@ -30,8 +30,8 @@ Setup
 
 2) Clone and install
 ```bash
-git clone https://github.com/<your-username>/buyer-intake.git
-cd buyer-intake
+git clonehttps://github.com/mrinmoyf2/Intrack
+cd Intrack
 pnpm install
 ```
 
